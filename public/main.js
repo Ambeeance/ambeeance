@@ -15,9 +15,6 @@ function createWindow() {
 
   //load the index.html from a url
   win.loadURL('http://localhost:3000');
-
-  // Open the DevTools.
-  win.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished

@@ -5,6 +5,7 @@
   "private": false,
   "main": "public/main.js",
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
@@ -15,7 +16,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -62,6 +63,5 @@
     "prettier": "^2.2.1"
   },
   "author": "Elliot Iddon (sleepypikachu)",
-  "license": "MIT",
-  "homepage": "https://github.com/sleepypikachu/ambeeance#readme"
+  "license": "MIT"
 }
