@@ -1,0 +1,23 @@
+{
+  "name": "ambeeance",
+  "version": "1.0.0",
+  "description": "A tool to provide config to your app while tinkering",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sleepypikachu/ambeeance.git"
+  },
+  "keywords": [
+    "config",
+    "utility"
+  ],
+  "author": "Elliot Iddon (sleepypikachu)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sleepypikachu/ambeeance/issues"
+  },
+  "homepage": "https://github.com/sleepypikachu/ambeeance#readme"
+}
