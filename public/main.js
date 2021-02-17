@@ -1,4 +1,7 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const express = require('express')();
+const env = require('./env');
+const ws = require('ws');
 
 function createWindow() {
   // Create the browser window.
@@ -9,7 +12,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
-      contextIsolation: true,
+      contextIsolation: false,
     },
   });
 
@@ -42,3 +45,33 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+let config = {};
+const sockets = [];
+
+ipcMain.on('config', (evt, arg) => {
+  config = arg;
+  sockets.forEach((s) => {
+    try {
+      s.send(JSON.stringify(config));
+    } catch (ignored) {}
+  });
+});
+
+express.get('/', function (req, res) {
+  res.send(config);
+});
+
+const wsServer = new ws.Server({ noServer: true });
+
+wsServer.on('connection', (socket) => {
+  sockets.push(socket);
+  socket.send(JSON.stringify(config));
+});
+
+const server = express.listen(env.expressPort);
+server.on('upgrade', (request, socket, head) => {
+  wsServer.handleUpgrade(request, socket, head, (socket) => {
+    wsServer.emit('connection', socket, request);
+  });
+});
