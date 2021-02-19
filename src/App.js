@@ -264,10 +264,48 @@ const componentForType = (type) => {
   }
 };
 
+const determineTypeFromValue = (value) => {
+  if (typeof value === 'number') {
+    return ConfigType.NUMBER;
+  }
+
+  if (typeof value === 'boolean') {
+    return ConfigType.SWITCH;
+  }
+
+  return ConfigType.STRING;
+};
+
 function App() {
   const classes = useStyles();
   const [modal, setModal] = useState(false);
   const [configurations, setConfigurations] = useState([]);
+  useEffect(() => {
+    let listener = (evt, arg) => {
+      console.log(arg);
+      setConfigurations((prevState) => {
+        let dirty = false;
+        const ret = [...prevState];
+        for (let i = 0; i < arg.length; i++) {
+          const spec = arg[i];
+          if (spec.key) {
+            const existing = ret.find((x) => x.key === spec.key);
+            if (!existing) {
+              dirty = true;
+              ret.push({
+                key: spec.key,
+                value: spec.value,
+                type: determineTypeFromValue(spec.value),
+              });
+            }
+          }
+        }
+        return dirty ? ret : prevState;
+      });
+    };
+    ipcRenderer.on('autospec', listener);
+    return () => ipcRenderer.removeListener('autospec', listener);
+  }, [setConfigurations]);
   useEffect(() => {
     const config = {};
     configurations.forEach((c) => (config[c.key] = c.value));

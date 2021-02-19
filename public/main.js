@@ -1,11 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const express = require('express')();
+const bodyParser = require('body-parser');
 const env = require('./env');
 const ws = require('ws');
 
+let win;
+
 function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     title: 'Ambeeance',
     width: 800,
     height: 600,
@@ -58,13 +61,34 @@ ipcMain.on('config', (evt, arg) => {
   });
 });
 
+express.use(bodyParser.json());
+
 express.get('/', function (req, res) {
   res.send(config);
 });
 
+express.post('/autospec', function (req, res) {
+  sendAutoSpec(req.body);
+  res.status(200).send();
+});
+
 const wsServer = new ws.Server({ noServer: true });
 
+const sendAutoSpec = (specs) => {
+  if (win) {
+    specs = specs.map(({ key, value }) => ({ key, value }));
+    win.webContents.send('autospec', specs);
+  }
+};
+
 wsServer.on('connection', (socket) => {
+  socket.on('message', (msg) => {
+    console.log(msg);
+    const { type, args } = JSON.parse(msg);
+    if (type === 'AUTOSPEC') {
+      sendAutoSpec(args);
+    }
+  });
   sockets.push(socket);
   socket.send(JSON.stringify(config));
 });
