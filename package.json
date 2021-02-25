@@ -1,9 +1,10 @@
 {
   "name": "ambeeance",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "A tool to provide config to your app while tinkering",
   "private": false,
-  "main": "public/main.js",
+  "main": "public/electron.js",
+  "homepage": "./",
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
@@ -11,7 +12,7 @@
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
     "body-parser": "^1.19.0",
-    "electron": "^11.2.1",
+    "electron-is-dev": "^1.2.0",
     "express": "^4.17.1",
     "formik": "^2.2.6",
     "formik-material-ui": "^3.0.1",
@@ -32,7 +33,50 @@
     "lint": "eslint --fix .",
     "lint-check": "eslint .",
     "postinstall": "husky install",
-    "dev": "concurrently --kill-others \"npm start\" \"npm run electron-dev\""
+    "dev": "concurrently --kill-others \"npm start\" \"npm run electron-dev\"",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "xyz.ambeeance.ambeeance",
+    "files": [
+      "build/**/*"
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 430,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "squirrel",
+      "icon": "build/icon.ico"
+    }
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "electron": "^11.3.0",
+    "electron-builder": "^22.9.1",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^5.0.8",
+    "pinst": "^2.1.4",
+    "prettier": "^2.2.1"
   },
   "eslintConfig": {
     "extends": [
@@ -59,16 +103,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "concurrently": "^5.3.0",
-    "eslint-config-prettier": "^7.2.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "husky": "^5.0.8",
-    "pinst": "^2.1.4",
-    "prettier": "^2.2.1"
   },
   "author": "Elliot Iddon (sleepypikachu)",
   "license": "MIT"

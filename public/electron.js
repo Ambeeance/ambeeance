@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+const isDev = require('electron-is-dev');
 const express = require('express')();
 const bodyParser = require('body-parser');
+const path = require('path');
 const env = require('./env');
 const ws = require('ws');
 
@@ -20,7 +22,9 @@ function createWindow() {
   });
 
   //load the index.html from a url
-  win.loadURL('http://localhost:3000');
+  win.loadURL(
+    isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`,
+  );
 }
 
 // This method will be called when Electron has finished
