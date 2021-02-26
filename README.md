@@ -9,16 +9,18 @@ You can change the config using the GUI and those changes will be dynamically re
 returns.
 
 The tool is currently functional but is pre-release, you may run into unexpected behaviour if you stray from the happy
-path. You can build from source on your own machine or you can get a pre-release build from the latest commit to `develop`.
+path. You can build from source on your own machine or you can get a [pre-release build](https://github.com/Ambeeance/ambeeance/actions/workflows/prerelease.yml) from the latest commit to `develop`.
 
 ## Features
 
 ### Managing Configuration (Manual)
 From the main screen you can click the + button to bring up the 'Add Configuration' dialog. You can select between 'String', 'Switch' and 'Number' for the type of the value and provide a key name for the configuration element. All other fields are optional and a display name will be generated from your key if you do not provide one.
+
 ![](clips/manualdef.png "Add Configuration form")
 ![](clips/manualdef_filled.png "Add Configuration form filled in with values")
 
 Tags are intended to provide easy searching and filtering in the future although you can review the tags set on a config element using the info icon in the main screen.
+
 ![](clips/info_panel.png "Info panel showing key, description and tags of a configuration")
 
 You can manipulate the values of the config directly from the main screen then retrieve the config via an HTTP GET request to the server which is hosted at `http://localhost:8335` by default.
@@ -32,9 +34,11 @@ Since your application will typically already have the schema of the configurati
 
 ### Websockets
 It should be relatively easy to create a poll based client library which uses the HTTP interface in practically any technology stack. If your environment supports it you can also make use of an event driven websocket interface to trigger configuration updates only when the Ambeeance config has been changed.
+
 ![](clips/websocket_read.gif "Demo of reading config updates from a websocket")
 
 Websockets can also be used to autospec new configuration elements
+
 ![](clips/websocket_autospec.gif "Demo of creating configuration with a websocket")
 
 
