@@ -1,5 +1,6 @@
 {
   "name": "ambeeance",
+  "author": "Elliot Iddon <elliot@citrusbytes.net> (sleepypikachu)",
   "version": "0.0.1",
   "description": "A tool to provide config to your app while tinkering",
   "private": false,
@@ -32,7 +33,7 @@
     "electron-dev": "electron .",
     "lint": "eslint --fix .",
     "lint-check": "eslint .",
-    "postinstall": "husky install",
+    "postinstall": "is-ci || husky install",
     "dev": "concurrently --kill-others \"npm start\" \"npm run electron-dev\"",
     "dist": "npm run build && electron-builder"
   },
@@ -56,25 +57,20 @@
       ]
     },
     "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    },
-    "win": {
-      "target": "squirrel",
-      "icon": "build/icon.ico"
+      "category": "Utility"
     }
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
     "electron": "^11.3.0",
     "electron-builder": "^22.9.1",
+    "electron-builder-squirrel-windows": "^22.10.5",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^5.0.8",
+    "is-ci": "^3.0.0",
     "pinst": "^2.1.4",
     "prettier": "^2.2.1"
   },
@@ -104,6 +100,5 @@
       "last 1 safari version"
     ]
   },
-  "author": "Elliot Iddon (sleepypikachu)",
   "license": "MIT"
 }
