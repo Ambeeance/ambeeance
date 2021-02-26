@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# 🐝 Ambeeance
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Status: alpha](https://img.shields.io/badge/status-alpha-blue)
+[![Trello Board](https://img.shields.io/badge/Trello%20Board-Ambeeance-blue?logo=trello&logoColor=blue)](https://trello.com/b/Y5Ja5qxc/%F0%9F%90%9D-ambeeance)
 
-## Available Scripts
+Ambeeance is a tool to provide configuration to your application at runtime
+during development.
+You can change the config using the GUI and those changes will be dynamically reflected in the JSON blob the service
+returns.
 
-In the project directory, you can run:
+The tool is currently functional but is pre-release, you may run into unexpected behaviour if you stray from the happy
+path. You can build from source on your own machine or you can get a pre-release build from the latest commit to `develop`.
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Managing Configuration (Manual)
+From the main screen you can click the + button to bring up the 'Add Configuration' dialog. You can select between 'String', 'Switch' and 'Number' for the type of the value and provide a key name for the configuration element. All other fields are optional and a display name will be generated from your key if you do not provide one.
+![](clips/manualdef.png "Add Configuration form")
+![](clips/manualdef_filled.png "Add Configuration form filled in with values")
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Tags are intended to provide easy searching and filtering in the future although you can review the tags set on a config element using the info icon in the main screen.
+![](clips/info_panel.png "Info panel showing key, description and tags of a configuration")
 
-### `npm test`
+You can manipulate the values of the config directly from the main screen then retrieve the config via an HTTP GET request to the server which is hosted at `http://localhost:8335` by default.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![](clips/http.gif "Demo of changing ambeeance config items and seeing change in the browser")
 
-### `npm run build`
+### Managing Configuration (Auto Spec)
+Since your application will typically already have the schema of the configuration object it needs to receive a programmatic interface for automatically specifying config is provided. This allows your application to pass the existing keys and values to Ambeeance at startup alleviating the requirement for any manual configuration.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![](clips/http_autospec.gif "Demo of auto specification of config items")
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Websockets
+It should be relatively easy to create a poll based client library which uses the HTTP interface in practically any technology stack. If your environment supports it you can also make use of an event driven websocket interface to trigger configuration updates only when the Ambeeance config has been changed.
+![](clips/websocket_read.gif "Demo of reading config updates from a websocket")
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Websockets can also be used to autospec new configuration elements
+![](clips/websocket_autospec.gif "Demo of creating configuration with a websocket")
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Clients
+It's not envisioned that developers will write Ambeeance specific code into their apps but instead clients should be developed to conditionally pass control of configuration objects to Ambeeance in development environments.
+* [ambeeance-client](https://github.com/ambeeance/client) - a Websocket based node.js client which autospecs the fields of an object and then overrides the fields when updates are published from the server.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Demos
+* [abeeance-example-app](https://github.com/ambeeance/example-app) - A tiny [express](https://github.com/expressjs/express) application which retrieves information from [swapi](https://swapi.dev), if you run it with `AMBEEANCE=ENABLED` in your environment then the ambeeance-client will attempt to connect to your local Ambeeance instance.
