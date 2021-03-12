@@ -39,6 +39,17 @@
   },
   "build": {
     "appId": "xyz.ambeeance.ambeeance",
+    "snap": {
+      "publish": {
+        "provider": "generic",
+        "url": "https://www.ambeeance.xyz"
+      }
+    },
+    "publish": [
+      {
+        "provider": "github"
+      }
+    ],
     "files": [
       "build/**/*"
     ],
