@@ -1,4 +1,7 @@
-# 🐝 Ambeeance
+<div align="center">
+    <img src="./graphics/logo_optimised.svg" height="120px" alt="Ambeeance Logo">
+    <h1>Ambeeance</h1>
+</div>
 
 ![Status: alpha](https://img.shields.io/badge/status-alpha-blue)
 [![Trello Board](https://img.shields.io/badge/Trello%20Board-Ambeeance-blue?logo=trello&logoColor=blue)](https://trello.com/b/Y5Ja5qxc/%F0%9F%90%9D-ambeeance)

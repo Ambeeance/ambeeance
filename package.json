@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",
-    "build": "react-scripts build",
+    "build": "gulp",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "electron .",
@@ -38,6 +38,7 @@
     "dist": "npm run build && electron-builder"
   },
   "build": {
+    "productName": "Ambeeance",
     "appId": "xyz.ambeeance.ambeeance",
     "snap": {
       "publish": {
@@ -53,6 +54,9 @@
     "files": [
       "build/**/*"
     ],
+    "mac": {
+      "icon": "build/icon.png"
+    },
     "dmg": {
       "contents": [
         {
@@ -80,6 +84,12 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "fs-mkdirp-stream": "^1.0.0",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-svg2png": "^2.0.2",
+    "gulplog": "^1.0.0",
     "husky": "^5.0.8",
     "is-ci": "^3.0.0",
     "pinst": "^2.1.4",
