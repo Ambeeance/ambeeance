@@ -38,6 +38,7 @@
     "dist": "npm run build && electron-builder"
   },
   "build": {
+    "productName": "Ambeeance",
     "appId": "xyz.ambeeance.ambeeance",
     "snap": {
       "publish": {
@@ -53,6 +54,9 @@
     "files": [
       "build/**/*"
     ],
+    "mac": {
+      "icon": "build/icon.png"
+    },
     "dmg": {
       "contents": [
         {
