@@ -28,12 +28,15 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
+import Logo from './logo.svg';
 import AddIcon from '@material-ui/icons/Add';
 import * as MdiIcons from 'mdi-material-ui';
 import { Field, FieldArray, Form, Formik } from 'formik';
 import { Select, Switch, TextField } from 'formik-material-ui';
 import PropTypes from 'prop-types';
 const { ipcRenderer } = window.require('electron');
+
+const LogoComponent = (props) => <img src={Logo} {...props} />;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +47,11 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+  },
+  titleIcon: {
+    height: '2rem',
+    width: '2rem',
+    marginRight: '0.35rem',
   },
   configurations: {
     flexGrow: 1,
@@ -317,7 +325,8 @@ function App() {
         <CssBaseline />
         <AppBar position={'relative'}>
           <Toolbar>
-            <Typography>🐝 Ambeeance</Typography>
+            <LogoComponent className={classes.titleIcon} />
+            <Typography>Ambeeance</Typography>
           </Toolbar>
         </AppBar>
         <Box component={'div'} className={classes.configurations}>
