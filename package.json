@@ -1,7 +1,7 @@
 {
   "name": "ambeeance",
   "author": "Elliot Iddon <elliot@citrusbytes.net> (sleepypikachu)",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A tool to provide config to your app while tinkering",
   "private": false,
   "main": "public/electron.js",
