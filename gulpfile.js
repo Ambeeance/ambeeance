@@ -9,7 +9,7 @@ function clean() {
 }
 
 function buildReact() {
-  return spawn('npx', ['react-scripts', 'build'], { stdio: 'inherit' });
+  return spawn('npx', ['react-scripts', 'build'], { stdio: 'inherit', shell: true });
 }
 
 function buildIcon() {
