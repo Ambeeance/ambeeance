@@ -3,25 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
   Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Chip,
   CssBaseline,
   Fab,
-  FormControl,
-  FormLabel,
   IconButton,
-  InputLabel,
   List,
   ListItem,
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
-  MenuItem,
-  Modal,
   Switch as MuiSwitch,
   TextField as MuiTextField,
   Toolbar,
@@ -31,12 +20,12 @@ import {
 import Logo from './logo.svg';
 import AddIcon from '@material-ui/icons/Add';
 import * as MdiIcons from 'mdi-material-ui';
-import { Field, FieldArray, Form, Formik } from 'formik';
-import { Select, Switch, TextField } from 'formik-material-ui';
 import PropTypes from 'prop-types';
 const { ipcRenderer } = window.require('electron');
+import ConfigType from './lib/ConfigType';
+import ConfigurationForm from './components/ConfigurationForm';
 
-const LogoComponent = (props) => <img src={Logo} {...props} />;
+const LogoComponent = (props) => <img alt="" role="presentation" src={Logo} {...props} />;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,13 +102,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConfigType = {
-  SWITCH: 0,
-  STRING: 1,
-  NUMBER: 2,
-};
-Object.freeze(ConfigType);
-
 const FormikState = ({ values, errors, touched }) => (
   <>
     <div
@@ -155,13 +137,21 @@ const iconLookup = (key) => {
   }
 };
 
-const configToComponent = (config, idx, setConfigurations, classes) => {
+const configToComponent = (config, idx, setConfigurations, editConfiguration, classes) => {
   const displayName =
     config.displayName && config.displayName.length > 0
       ? config.displayName
       : keyToDisplayName(config.key);
   const icon = iconLookup(config.icon);
   const secondaryActions = [
+    <IconButton
+      key={`config_edit_button_${idx}`}
+      onClick={() => {
+        editConfiguration(config);
+      }}
+    >
+      <MdiIcons.Pencil color={'primary'} />
+    </IconButton>,
     <IconButton
       key={`config_delete_button_${idx}`}
       onClick={() => {
@@ -261,17 +251,6 @@ const configToComponent = (config, idx, setConfigurations, classes) => {
   }
 };
 
-const componentForType = (type) => {
-  switch (type) {
-    case ConfigType.SWITCH:
-      return [Switch, {}];
-    case ConfigType.NUMBER:
-      return [TextField, { type: 'number' }];
-    case ConfigType.STRING:
-      return [TextField, {}];
-  }
-};
-
 const determineTypeFromValue = (value) => {
   if (typeof value === 'number') {
     return ConfigType.NUMBER;
@@ -286,7 +265,8 @@ const determineTypeFromValue = (value) => {
 
 function App() {
   const classes = useStyles();
-  const [modal, setModal] = useState(false);
+  const [createModal, setCreateModal] = useState(false);
+  const [editing, setEditing] = useState(null);
   const [configurations, setConfigurations] = useState([]);
   useEffect(() => {
     let listener = (evt, arg) => {
@@ -332,7 +312,13 @@ function App() {
         <Box component={'div'} className={classes.configurations}>
           <List>
             {configurations.map((config, idx) =>
-              configToComponent(config, idx, setConfigurations, classes),
+              configToComponent(
+                config,
+                idx,
+                setConfigurations,
+                (edit) => setEditing(edit),
+                classes,
+              ),
             )}
           </List>
         </Box>
@@ -341,162 +327,38 @@ function App() {
         color={'primary'}
         aria-label={'add'}
         className={classes.fab}
-        onClick={() => setModal(true)}
+        onClick={() => setCreateModal(true)}
       >
         <AddIcon />
       </Fab>
-      <Modal
-        open={modal}
-        onClose={() => setModal(false)}
-        className={classes.modalContainer}
-        disableAutoFocus={true}
-      >
-        <Card className={classes.modalBody}>
-          <CardHeader title={'Add Configuration'} />
-          <Formik
-            initialValues={{
-              key: '',
-              displayName: '',
-              description: '',
-              value: '',
-              type: ConfigType.STRING,
-              tags: [],
-              _meta: {
-                addTag: '',
-              },
-            }}
-            onSubmit={(values, formikHelpers) => {
-              const { key, displayName, description, value, type, tags } = values;
-              setConfigurations((prevState) => {
-                return [...prevState, { key, displayName, description, value, type, tags }];
-              });
-              setModal(false);
-            }}
-          >
-            {({ values, setFieldValue, submitForm }) => {
-              if (values.type === ConfigType.SWITCH && typeof values.value !== 'boolean') {
-                setFieldValue('value', !!values.value, false);
-              }
-              const [valueComponent, valueProps] = componentForType(values.type);
-              return (
-                <>
-                  <CardContent>
-                    <Form>
-                      <div className={classes.modalForm}>
-                        <div className={classes.modalFormColumn}>
-                          <Field
-                            component={TextField}
-                            type={'string'}
-                            name={'key'}
-                            label={'Key'}
-                            value={values.key}
-                          />
-                          <FormControl>
-                            <InputLabel>Type</InputLabel>
-                            <Field
-                              component={Select}
-                              name={'type'}
-                              label={'Type'}
-                              value={values.type}
-                            >
-                              <MenuItem value={ConfigType.STRING}>String</MenuItem>
-                              <MenuItem value={ConfigType.SWITCH}>Switch</MenuItem>
-                              <MenuItem value={ConfigType.NUMBER}>Number</MenuItem>
-                            </Field>
-                          </FormControl>
-                          <FormControl>
-                            <FormLabel>Value</FormLabel>
-                            <Field
-                              component={valueComponent}
-                              {...valueProps}
-                              name={'value'}
-                              value={values.value}
-                              checked={values.value}
-                            />
-                          </FormControl>
-                        </div>
-                        <div className={classes.modalFormColumn}>
-                          <Field
-                            component={TextField}
-                            type={'string'}
-                            name={'displayName'}
-                            label={'Display Name'}
-                            value={values.displayName}
-                          />
-                          <Field
-                            component={TextField}
-                            name={'description'}
-                            value={values.description}
-                            type={'string'}
-                            label={'Description'}
-                          />
-                          <FieldArray
-                            name={'tags'}
-                            render={(arrayHelpers) => {
-                              const push = () => {
-                                if (values._meta.addTag && values._meta.addTag.length > 0) {
-                                  arrayHelpers.push(values._meta.addTag);
-                                  setFieldValue('_meta.addTag', '', false);
-                                }
-                              };
-                              return (
-                                <FormControl>
-                                  <FormLabel>Tags</FormLabel>
-                                  <div className={classes.chipList}>
-                                    {values.tags.map((tag, index) => (
-                                      <Chip
-                                        key={`tag_${index}`}
-                                        label={tag}
-                                        onDelete={() => arrayHelpers.remove(index)}
-                                      />
-                                    ))}
-                                  </div>
-                                  <List>
-                                    <ListItem>
-                                      <Field
-                                        value={values._meta.addTag}
-                                        component={TextField}
-                                        name={'_meta.addTag'}
-                                        onKeyDown={(e) => {
-                                          if (e.key === 'Enter') {
-                                            push();
-                                          }
-                                        }}
-                                      />
-                                      <ListItemSecondaryAction>
-                                        <IconButton onClick={push}>
-                                          <AddIcon />
-                                        </IconButton>
-                                      </ListItemSecondaryAction>
-                                    </ListItem>
-                                  </List>
-                                </FormControl>
-                              );
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </Form>
-                  </CardContent>
-                  <CardActions className={classes.formActions}>
-                    <Button
-                      color={'secondary'}
-                      onClick={() => {
-                        setModal(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button color={'primary'} onClick={submitForm}>
-                      Add Configuration
-                    </Button>
-                  </CardActions>
-                </>
-              );
-            }}
-          </Formik>
-        </Card>
-      </Modal>
+      <ConfigurationForm
+        show={createModal}
+        cancel={() => setCreateModal(false)}
+        classes={classes}
+        result={(r) => {
+          setCreateModal(false);
+          setConfigurations((prevState) => {
+            return [...prevState, r];
+          });
+        }}
+      />
+      <ConfigurationForm
+        show={!!editing}
+        initial={editing}
+        cancel={() => setEditing(null)}
+        classes={classes}
+        result={(r, initialKey) => {
+          setEditing(null);
+          setConfigurations((prevState) => {
+            const copy = [...prevState];
+            const index = copy.findIndex((c) => initialKey === c.key);
+            if (index > -1) {
+              Object.assign(copy[index], r);
+            }
+            return copy;
+          });
+        }}
+      />
     </div>
   );
 }
